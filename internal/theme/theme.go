@@ -67,6 +67,12 @@ type Glyphs struct {
 	TaskFilled string // task bar ▣
 	TaskEmpty  string // task bar ▢
 
+	Diff     string // diff segment (lines added/removed)
+	Estimate string // estimated-cost marker (subscription usage)
+	Dir      string // directory segment (folder)
+	Week     string // weekly (7-day) segment (calendar)
+	Ctx      string // context-window segment (memory/brain)
+
 	// Lang maps a runtime language (as detected by internal/runtime) to its
 	// icon. Only populated for the Nerd Font charset; nil for unicode/ascii,
 	// where the runtime segment falls back to the language name alone.
@@ -119,6 +125,7 @@ func Load(name, charset, colorMode string, overrides map[string]Style) (*Theme, 
 	}
 	glyphs := glyphsFor(cs)
 	glyphs.Lang = langIconsFor(cs)
+	glyphs.Diff, glyphs.Estimate, glyphs.Dir, glyphs.Week, glyphs.Ctx = extraGlyphs(cs)
 	return &Theme{
 		Name:     name,
 		Roles:    roles,
@@ -127,6 +134,24 @@ func Load(name, charset, colorMode string, overrides map[string]Style) (*Theme, 
 		Mode:     mode,
 		Glyphs:   glyphs,
 	}, nil
+}
+
+// extraGlyphs returns the diff, estimate, directory-folder, weekly-calendar,
+// and context (brain) glyphs for a charset. Nerd Font uses dedicated glyphs;
+// unicode uses portable symbols (± / ≈) and no leading icons for dir/week/ctx;
+// ascii marks estimates with a tilde and skips the rest. All codepoints are
+// verified present in the Nerd Font ranges.
+func extraGlyphs(cs Charset) (diff, estimate, dir, week, ctx string) {
+	switch cs {
+	case CharsetNerdFont:
+		// oct-diff, mdi-approx, mdi-folder, mdi-calendar, mdi-brain (trailing
+		// spaces on the leading-icon glyphs so segments concatenate directly).
+		return "\uf440", "\U000f0f9e", "\U000f024b ", "\U000f00ed ", "\U000f09cd "
+	case CharsetASCII:
+		return "", "~", "", "", ""
+	default: // unicode
+		return "\u00b1", "\u2248", "", "", ""
+	}
 }
 
 // langIconsFor returns the per-language icon map for a charset. Only the Nerd
@@ -388,8 +413,8 @@ func glyphsFor(cs Charset) Glyphs {
 		}
 	case CharsetNerdFont:
 		return Glyphs{
-			Brand: "◆", Branch: " ", BlockIcon: "\U000f0519", ResetIcon: "\U000f051b",
-			Clock: "\U000f0150 ", Gear: "\U000f013a ", Flag: "",
+			Brand: "\U000f0674", Branch: "⎇ ", BlockIcon: "\U000f051f", ResetIcon: "\U000f0709",
+			Clock: "󰔚 ", Gear: "\U000f013a ", Flag: "",
 			BarFilled: "█", BarEmpty: "░", TaskFilled: "▣", TaskEmpty: "▢",
 		}
 	default: // unicode

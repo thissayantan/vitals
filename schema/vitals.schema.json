@@ -106,6 +106,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
+                  "mode": { "type": "string", "enum": ["auto", "subscription", "api"], "default": "auto" },
                   "source": { "type": "string", "enum": ["auto", "cc", "estimate"], "default": "auto" }
                 }
               }

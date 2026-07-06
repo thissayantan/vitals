@@ -53,7 +53,12 @@ func (s *contextSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool
 		parts = append(parts, pctText+" "+ctxLabel)
 	}
 
-	return strings.Join(parts, " "), true
+	out := strings.Join(parts, " ")
+	// Lead with the context (brain) glyph; it carries a trailing space.
+	if g := ctx.Theme.Glyphs.Ctx; g != "" {
+		out = ctx.Theme.Style("muted").Render(g) + out
+	}
+	return out, true
 }
 
 // windowBadge returns "1M" for ≥1M, "200k" for ≥200k, else "".

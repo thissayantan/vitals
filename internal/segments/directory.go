@@ -29,6 +29,10 @@ func (s *directorySegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bo
 	default: // basename
 		text = ctx.Session.DirName()
 	}
+	// Prefix a folder glyph (Nerd Font only; the glyph carries a trailing space).
+	if g := ctx.Theme.Glyphs.Dir; g != "" {
+		text = g + text
+	}
 	return styled(ctx, cfg, "dir", text), true
 }
 

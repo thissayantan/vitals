@@ -22,7 +22,7 @@ func TestDefaultsLayout(t *testing.T) {
 	}
 	want := [][]string{
 		{"model", "context", "block", "weekly", "duration", "cost"},
-		{"directory", "worktree", "git", "diff", "runtime", "tasks"},
+		{"directory", "worktree", "git", "runtime", "diff", "tasks"},
 	}
 	for i, line := range d.Lines {
 		for j, sc := range line.Segments {

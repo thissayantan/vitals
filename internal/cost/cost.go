@@ -72,15 +72,24 @@ func priceFor(model string) Pricing {
 	return table.Default
 }
 
-// Get resolves the cost for s according to source ("auto" | "cc" | "estimate").
-//   - "cc":       always the platform-reported cost.total_cost_usd.
-//   - "estimate": always the transcript estimate.
-//   - "auto":     real cost when > 0, else the estimate.
-func Get(s *claude.Session, c *cache.Store, source string) Estimate {
-	switch source {
-	case "cc":
+// Get resolves the cost for s according to mode. Preferred values:
+//   - "api":          always the platform-reported cost.total_cost_usd (actual).
+//   - "subscription": always marked estimated; keeps the reported number when
+//     present (Claude reports an API-equivalent cost even on subscription),
+//     else falls back to the transcript estimate.
+//   - "auto":         actual when total_cost_usd > 0, else the transcript estimate.
+//
+// Legacy aliases: "cc" == "api"; "estimate" == always the transcript estimate.
+func Get(s *claude.Session, c *cache.Store, mode string) Estimate {
+	switch mode {
+	case "api", "cc":
 		return Estimate{USD: s.Cost.TotalCostUSD, Estimated: false}
 	case "estimate":
+		return Estimate{USD: estimate(s, c), Estimated: true}
+	case "subscription":
+		if s.Cost.TotalCostUSD > 0 {
+			return Estimate{USD: s.Cost.TotalCostUSD, Estimated: true}
+		}
 		return Estimate{USD: estimate(s, c), Estimated: true}
 	default: // auto
 		if s.Cost.TotalCostUSD > 0 {
