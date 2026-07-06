@@ -31,18 +31,22 @@ limits, cost, git, and more — rendered as composable segments you fully contro
 ## Quick start
 
 ```sh
-# Install (no runtime required). Add --nerdfont if your terminal uses a Nerd Font
-# to enable language/status icons (e.g. the Go gopher on the runtime segment).
+# Install (no runtime required) — Unicode icons, works in any terminal:
 curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh
 
-# Wire it into Claude Code (safely merges ~/.claude/settings.json, backup first)
+# Then wire it into Claude Code (safely merges ~/.claude/settings.json, backup first):
 vitals init
-
-# Customize, visually
-vitals config
 ```
 
-That's it — open Claude Code and your new status line is live.
+**Using a Nerd Font?** Add `--nerdfont` to get the richer icon set (folder, calendar,
+language logos like the Go gopher). It seeds `charset: nerdfont` for you:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh -s -- --nerdfont
+```
+
+That's it — restart Claude Code and your new status line is live. Then run `vitals config`
+to customize it visually.
 
 <details>
 <summary>Manual setup (no installer)</summary>
@@ -59,8 +63,12 @@ Two lines by default (each fully reorderable):
 
 ```
 ◆ Opus 4.8 │ 1M ████░░░░░░ 38% ctx │ ↻ 5h 65% ↺8:10am │ 7d 12% │ ⏱ 48m1s │ $34.13
-hirex │ ⎇ feat/hiring-pipeline* │ +2453/-439 │ bun v1.3.14 │ ▣▣▢░░░░░░░ 30% ⚑
+hirex │ ⎇ feat/hiring-pipeline* │ bun v1.3.14 │ ± +2453/-439 │ ⚑ ▣▣▢░░░░░░░ 30%
 ```
+
+(Shown in the Unicode charset. With `charset: nerdfont` each segment gets a richer glyph — a
+sparkle for the model, a folder for the directory, a calendar for the weekly limit, language
+logos on `runtime`, etc.)
 
 Each segment **smart-hides** when its data is zero, empty, or unavailable (no branch outside a
 repo, no cost on a fresh session, etc.), so the line stays tidy.
@@ -102,11 +110,50 @@ Config is JSON, validated by a [JSON Schema](schema/vitals.schema.json). Discove
 }
 ```
 
-- **Order** = the order of entries in `lines[].segments[]`.
+- **Order** = the order of entries in `lines[].segments[]` (line 1, then line 2).
 - **Disable** a segment: set `"enabled": false` (or remove it).
+- **Per-segment options** go in `"options": {...}` — e.g. `context` → `display` (`bar`/`percent`/`both`)
+  + `barWidth`; `directory` → `style` (`basename`/`full`/`truncated`); `git` → `showSha`;
+  `block` → `format` (`12h`/`24h`); `cost` → `mode` (see below).
 - **Restyle**: add `"style": {...}`, or set `"theme": "custom"` + `themeOverrides`.
 
-Or just run `vitals config` and do it visually.
+### Customizing visually — `vitals config`
+
+An in-terminal TUI with a **live preview** (WYSIWYG — it uses the real renderer):
+
+| Key | Action |
+|---|---|
+| `↑`/`↓` | move cursor | 
+| `space` | enable / disable the segment |
+| `o` | **edit that segment's options** (cycle values live) |
+| `a` / `x` | **add** a segment type / **remove** the current one |
+| `J`/`K` | reorder (moves across line 1 ↔ line 2) |
+| `p` | cycle a **preset** layout |
+| `t` / `c` / `[` `]` | cycle theme / charset / separator |
+| `s` | save to `~/.config/vitals/config.json` |
+
+### Cost: subscription vs API
+
+`cost` has a `mode` option:
+
+| `mode` | Behavior |
+|---|---|
+| `auto` (default) | actual cost when Claude reports one, else an estimate |
+| `subscription` | always marked **estimated** (`≈`), keeps the reported number |
+| `api` | always the actual reported cost, no estimate marker |
+
+On a subscription plan Claude still reports an API-equivalent `total_cost_usd`, so set
+`"options": { "mode": "subscription" }` to show it with the estimate marker.
+
+### Presets
+
+Ship-with layouts you can start from: **full** (the default), **minimal**, **compact**.
+
+```sh
+vitals init --preset minimal   # seeds ~/.config/vitals/config.json (only if none exists)
+```
+
+…or press `p` in `vitals config` to cycle them.
 
 ### Themes & charset
 

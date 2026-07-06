@@ -61,3 +61,22 @@ func TestGetSources(t *testing.T) {
 		t.Errorf("auto with zero cost should be estimated, got %+v", e)
 	}
 }
+
+func TestGetModes(t *testing.T) {
+	s := &claude.Session{Cost: claude.Cost{TotalCostUSD: 36.04}}
+
+	// api / cc: actual, never estimated.
+	for _, mode := range []string{"api", "cc"} {
+		if e := Get(s, nil, mode); e.Estimated || e.USD != 36.04 {
+			t.Errorf("%s = %+v, want {36.04 false}", mode, e)
+		}
+	}
+	// subscription: keeps the reported number but marks it estimated.
+	if e := Get(s, nil, "subscription"); !e.Estimated || e.USD != 36.04 {
+		t.Errorf("subscription = %+v, want {36.04 true}", e)
+	}
+	// subscription with no reported cost falls back to the transcript estimate.
+	if e := Get(&claude.Session{}, nil, "subscription"); !e.Estimated {
+		t.Errorf("subscription w/o reported cost should be estimated, got %+v", e)
+	}
+}

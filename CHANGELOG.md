@@ -7,6 +7,26 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-07
+
+### Added
+- Redesigned Nerd Font icon set: sparkle model marker, a leading brain glyph on
+  `context`, a calendar on `weekly`, an oct-diff glyph on `diff`, a folder on
+  `directory`, and an estimate marker (`≈`) on `cost`. The `tasks` flag now
+  leads its segment (icon-first, consistent with every other segment).
+- `cost` gains a `mode` option (`auto` | `subscription` | `api`) — subscription
+  keeps the platform-reported number but marks it estimated (legacy `source`
+  still accepted).
+- `vitals config` TUI: `o` edits a segment's options live, `a`/`x` add/remove a
+  segment, `p` cycles preset layouts.
+- Layout presets (`full` | `minimal` | `compact`) and
+  `vitals init --preset <name>` / `--seed-config` to write a starter config.
+
+### Changed
+- Default line 2 orders `runtime` before `diff`.
+- Charset stays opt-in: Unicode is the portable default; `--nerdfont` (installer)
+  or `charset: nerdfont` enables the richer glyphs.
+
 ## [0.1.0] - 2026-07-07
 
 ### Added
