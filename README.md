@@ -7,8 +7,7 @@
 A fast, modular status line for [Claude Code](https://code.claude.com) — model, context, rate
 limits, cost, git, and more — rendered as composable segments you fully control.
 
-<!-- Demo gif: generate with `vhs demo/demo.tape` (produces docs/demo.gif), then uncomment: -->
-<!-- ![vitals demo](docs/demo.gif) -->
+![vitals status line](docs/demo.png)
 
 [![CI](https://github.com/thissayantan/vitals/actions/workflows/ci.yml/badge.svg)](https://github.com/thissayantan/vitals/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/thissayantan/vitals)](https://github.com/thissayantan/vitals/releases)
@@ -71,12 +70,11 @@ Two lines by default (each fully reorderable):
 hirex │ ⎇ feat/hiring-pipeline* │ bun v1.3.14 │ ± +2453/-439 │ ⚑ ▣▣▢░░░░░░░ 30%
 ```
 
-> This is the **Unicode** charset — deliberately, because a GitHub README (a browser with no
-> Nerd Font) can't render Nerd Font glyphs. With a **Nerd Font** installed (`charset: nerdfont`,
-> which the installer offers to set up), every segment gets a richer icon: a **✧ sparkle** for
-> the model, a **brain** for context, a **calendar** for the weekly limit, a **folder** for the
-> directory, the **language's logo** on `runtime` (the Go gopher, etc.), and an **≈** on estimated
-> cost. Same layout, nicer glyphs.
+> The **screenshot at the top** is the **Nerd Font** charset (✧ model, brain context, calendar
+> weekly, folder directory, language logos on `runtime`, ≈ on estimated cost). The text block
+> here is the **same layout in the Unicode** charset — shown as text because a GitHub README (a
+> browser with no Nerd Font) can't render Nerd Font glyphs. Unicode is the portable default;
+> `charset: nerdfont` (which the installer offers to set up) enables the richer icons.
 
 Each segment **smart-hides** when its data is zero, empty, or unavailable (no branch outside a
 repo, no cost on a fresh session, etc.), so the line stays tidy.
