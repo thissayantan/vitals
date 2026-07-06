@@ -294,6 +294,8 @@ Detect project language by lockfile/manifest, then resolve a version. Preserve t
 Version source order: pinned version files (`.nvmrc`, `.python-version`, `.ruby-version`, `.tool-versions`)
 **before** execing the tool (`bun --version`, etc.). Cache 1h. Make the mapping a **declarative table**
 (not 12 if-blocks) so new languages are one row.
+In the Nerd Font charset the runtime segment prefixes a per-language glyph (`theme.Glyphs.LangIcon`);
+unicode/ascii charsets render the language name alone.
 
 ---
 

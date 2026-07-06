@@ -16,7 +16,7 @@ for the extension recipe.
 | `tasks.go` | `tasks` | `▣▣▢░ 30% ⚑` | 0 tasks |
 | `git.go` | `git` | `⎇ branch*` | not a repo |
 | `diff.go` | `diff` | `+2453/-439` | both 0 |
-| `runtime.go` | `runtime` | `bun v1.3.14` | no language |
+| `runtime.go` | `runtime` | `bun v1.3.14` (glyph-prefixed in Nerd Font) | no language |
 | `worktree.go` | `worktree` | `⚙ wt:name` | empty |
 | `directory.go` | `directory` | `hirex` | never |
 

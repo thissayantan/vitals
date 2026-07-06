@@ -15,6 +15,9 @@ All notable changes to this project are documented here. The format follows
   ascii charsets.
 - Cached providers: git (`.git/HEAD` + 5s dirty cache), runtime detection (declarative 12-language
   table, 1h cache), and transcript-based cost estimation (embedded pricing table, 10s cache).
+- Runtime segment language icons: in the Nerd Font charset the segment prefixes a per-language glyph
+  (Go, Node, Python, Rust, Ruby, Java, PHP, .NET, Swift, Elixir). Unicode/ASCII charsets are
+  unchanged (name only).
 - JSON config with discovery + deep-merge + JSON-Schema validation; redesigned two-line default
   layout.
 - `vitals config` — bubbletea TUI configurator with a live preview rendered by the real renderer.
