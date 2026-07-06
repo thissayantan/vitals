@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/thissayantan/vitals/internal/config"
 )
 
 // runInit merges the statusLine block into ~/.claude/settings.json, backing up
@@ -23,8 +25,13 @@ func runInit(args []string) int {
 	settingsPath := fs.String("settings", "", "settings.json path (default ~/.claude/settings.json)")
 	binPath := fs.String("bin", "", "vitals binary path to wire (default: this executable)")
 	dryRun := fs.Bool("dry-run", false, "print the result without writing")
+	seedConfig := fs.Bool("seed-config", false, "also write a starter ~/.config/vitals/config.json if none exists")
+	preset := fs.String("preset", "", "seed the config from a named preset (full|minimal|compact); implies --seed-config")
 	if err := fs.Parse(args); err != nil {
 		return 2
+	}
+	if *preset != "" {
+		*seedConfig = true
 	}
 
 	path := *settingsPath
@@ -64,10 +71,49 @@ func runInit(args []string) int {
 	if backup != "" {
 		fmt.Printf("  backup: %s\n", backup)
 	}
+
+	if *seedConfig {
+		cfgPath, wrote, err := seedUserConfig(*preset)
+		switch {
+		case err != nil:
+			fmt.Fprintf(os.Stderr, "vitals init: seed config: %v\n", err)
+			return 1
+		case wrote:
+			fmt.Printf("✓ wrote starter config %s\n", cfgPath)
+		default:
+			fmt.Printf("  config already exists (%s); left unchanged\n", cfgPath)
+		}
+	}
+
 	fmt.Println("\nNext steps:")
 	fmt.Println("  • restart Claude Code (or start a new session) to see the status line")
 	fmt.Println("  • run `vitals config` to customize segments, theme, and order")
 	return 0
+}
+
+// seedUserConfig writes a starter ~/.config/vitals/config.json from a preset (or
+// Defaults when preset is empty), but only when no config exists — it never
+// clobbers an existing one.
+func seedUserConfig(preset string) (path string, wrote bool, err error) {
+	path = config.UserConfigPath()
+	if path == "" {
+		return "", false, fmt.Errorf("cannot resolve config path")
+	}
+	if fi, statErr := os.Stat(path); statErr == nil && !fi.IsDir() {
+		return path, false, nil // never clobber
+	}
+	cfg := config.Defaults()
+	if preset != "" {
+		if p := config.Preset(preset); p != nil {
+			cfg = p
+		} else {
+			return "", false, fmt.Errorf("unknown preset %q (want one of %v)", preset, config.PresetNames())
+		}
+	}
+	if err := cfg.Save(path); err != nil {
+		return "", false, err
+	}
+	return path, true, nil
 }
 
 // mergeStatusLine reads settings.json (if present), deep-sets the statusLine

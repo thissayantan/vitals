@@ -16,6 +16,7 @@ import (
 	"github.com/thissayantan/vitals/internal/claude"
 	"github.com/thissayantan/vitals/internal/config"
 	"github.com/thissayantan/vitals/internal/render"
+	"github.com/thissayantan/vitals/internal/segments"
 	"github.com/thissayantan/vitals/internal/theme"
 )
 
@@ -50,13 +51,21 @@ type model struct {
 	status  string
 	saved   bool
 	preview *claude.Session
+
+	editing   bool // per-segment option editor is open
+	optCursor int  // cursor within the current segment's options
+	adding    bool // add-segment type picker is open
+	addCursor int  // cursor within the addable-types list
+	presetIdx int  // last-applied preset index (for cycling)
 }
+
+const listHelp = "↑/↓ move · space toggle · o options · a add · x remove · J/K reorder · p preset · t/c/[/] theme/charset/sep · s save · q quit"
 
 func newModel(cfg *config.Config) model {
 	return model{
 		cfg:     cfg,
 		preview: previewSession(),
-		status:  "↑/↓ move · space toggle · J/K reorder · t theme · c charset · [/] separator · s save · q quit",
+		status:  listHelp,
 	}
 }
 
@@ -92,40 +101,107 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "q", "ctrl+c", "esc":
-			return m, tea.Quit
-
-		case "up", "k":
-			m.cursor--
-			m.clampCursor()
-		case "down", "j":
-			m.cursor++
-			m.clampCursor()
-
-		case " ", "enter":
-			m.toggleCurrent()
-		case "J":
-			m.moveCurrent(+1)
-		case "K":
-			m.moveCurrent(-1)
-
-		case "t":
-			m.cfg.Theme = cycle(themeChoices, m.cfg.Theme, +1)
-			m.status = "theme: " + m.cfg.Theme
-		case "c":
-			m.cfg.Charset = cycle(charsetChoices, m.cfg.Charset, +1)
-			m.status = "charset: " + m.cfg.Charset
-		case "]":
-			m.cfg.Separator = cycle(separatorChoices, m.cfg.Separator, +1)
-		case "[":
-			m.cfg.Separator = cycle(separatorChoices, m.cfg.Separator, -1)
-
-		case "s":
-			m.save()
+		switch {
+		case m.editing:
+			m.updateEditing(msg)
+		case m.adding:
+			m.updateAdding(msg)
+		default:
+			return m.updateList(msg)
 		}
 	}
 	return m, nil
+}
+
+// updateList handles keys in the main segment-list view.
+func (m model) updateList(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "q", "ctrl+c", "esc":
+		return m, tea.Quit
+
+	case "up", "k":
+		m.cursor--
+		m.clampCursor()
+	case "down", "j":
+		m.cursor++
+		m.clampCursor()
+
+	case " ":
+		m.toggleCurrent()
+	case "o", "enter":
+		m.openOptions()
+	case "a":
+		m.openAdd()
+	case "x", "d":
+		m.removeCurrent()
+	case "J":
+		m.moveCurrent(+1)
+	case "K":
+		m.moveCurrent(-1)
+	case "p":
+		m.cyclePreset()
+
+	case "t":
+		m.cfg.Theme = cycle(themeChoices, m.cfg.Theme, +1)
+		m.status = "theme: " + m.cfg.Theme
+	case "c":
+		m.cfg.Charset = cycle(charsetChoices, m.cfg.Charset, +1)
+		m.status = "charset: " + m.cfg.Charset
+	case "]":
+		m.cfg.Separator = cycle(separatorChoices, m.cfg.Separator, +1)
+	case "[":
+		m.cfg.Separator = cycle(separatorChoices, m.cfg.Separator, -1)
+
+	case "s":
+		m.save()
+	}
+	return m, nil
+}
+
+// updateEditing handles keys in the per-segment option editor.
+func (m *model) updateEditing(msg tea.KeyMsg) {
+	specs := optionsFor(m.currentType())
+	switch msg.String() {
+	case "esc", "o", "q":
+		m.editing = false
+		m.status = listHelp
+	case "up", "k":
+		if m.optCursor > 0 {
+			m.optCursor--
+		}
+	case "down", "j":
+		if m.optCursor < len(specs)-1 {
+			m.optCursor++
+		}
+	case "left", "h":
+		m.editOption(-1)
+	case "right", "l", " ", "enter":
+		m.editOption(+1)
+	}
+}
+
+// updateAdding handles keys in the add-segment type picker.
+func (m *model) updateAdding(msg tea.KeyMsg) {
+	types := m.addableTypes()
+	switch msg.String() {
+	case "esc", "q":
+		m.adding = false
+		m.status = listHelp
+	case "up", "k":
+		if m.addCursor > 0 {
+			m.addCursor--
+		}
+	case "down", "j":
+		if m.addCursor < len(types)-1 {
+			m.addCursor++
+		}
+	case "enter", " ":
+		if m.addCursor < len(types) {
+			m.addSegment(types[m.addCursor])
+		}
+		m.adding = false
+		m.status = listHelp
+	}
 }
 
 func (m *model) toggleCurrent() {
@@ -205,6 +281,124 @@ func (m *model) save() {
 	m.status = "saved to " + path + "  ·  run `vitals init` to wire it up"
 }
 
+// currentType returns the segment type under the cursor ("" if none).
+func (m model) currentType() string {
+	if sc := m.currentSegment(); sc != nil {
+		return sc.Type
+	}
+	return ""
+}
+
+// currentSegment returns a pointer to the segment under the cursor (nil if none).
+func (m *model) currentSegment() *config.SegmentConfig {
+	flat := m.flat()
+	if m.cursor < 0 || m.cursor >= len(flat) {
+		return nil
+	}
+	p := flat[m.cursor]
+	return &m.cfg.Lines[p.line].Segments[p.seg]
+}
+
+// openOptions enters the per-segment option editor (no-op if the segment has none).
+func (m *model) openOptions() {
+	if len(optionsFor(m.currentType())) == 0 {
+		m.status = "no editable options for " + m.currentType()
+		return
+	}
+	m.editing = true
+	m.optCursor = 0
+	m.status = "↑/↓ option · ←/→ change · esc back"
+}
+
+// editOption cycles the option under optCursor by dir.
+func (m *model) editOption(dir int) {
+	sc := m.currentSegment()
+	if sc == nil {
+		return
+	}
+	specs := optionsFor(sc.Type)
+	if m.optCursor < 0 || m.optCursor >= len(specs) {
+		return
+	}
+	if sc.Options == nil {
+		sc.Options = map[string]any{}
+	}
+	cycleOption(sc.Options, specs[m.optCursor], dir)
+}
+
+// openAdd enters the add-segment type picker (no-op if every type is present).
+func (m *model) openAdd() {
+	if len(m.addableTypes()) == 0 {
+		m.status = "all segment types already present"
+		return
+	}
+	m.adding = true
+	m.addCursor = 0
+	m.status = "↑/↓ type · enter add · esc cancel"
+}
+
+// addableTypes lists registered segment types not already in the layout, sorted.
+func (m model) addableTypes() []string {
+	present := map[string]bool{}
+	for _, line := range m.cfg.Lines {
+		for _, sc := range line.Segments {
+			present[sc.Type] = true
+		}
+	}
+	var out []string
+	for _, t := range segments.All() {
+		if !present[t] {
+			out = append(out, t)
+		}
+	}
+	return out
+}
+
+// addSegment inserts typ right after the cursor (or on line 1 if the list is empty).
+func (m *model) addSegment(typ string) {
+	flat := m.flat()
+	sc := config.SegmentConfig{Type: typ}
+	if m.cursor < len(flat) {
+		p := flat[m.cursor]
+		line := &m.cfg.Lines[p.line]
+		line.Segments = insertAt(line.Segments, p.seg+1, sc)
+		m.cursor++
+	} else if len(m.cfg.Lines) > 0 {
+		m.cfg.Lines[0].Segments = append(m.cfg.Lines[0].Segments, sc)
+	}
+	m.clampCursor()
+	m.status = "added " + typ
+}
+
+// removeCurrent deletes the segment under the cursor.
+func (m *model) removeCurrent() {
+	flat := m.flat()
+	if m.cursor >= len(flat) {
+		return
+	}
+	p := flat[m.cursor]
+	line := &m.cfg.Lines[p.line]
+	typ := line.Segments[p.seg].Type
+	line.Segments = removeAt(line.Segments, p.seg)
+	m.clampCursor()
+	m.status = "removed " + typ
+}
+
+// cyclePreset replaces the layout with the next named preset (keeps theme/charset/
+// separator so the user's look is preserved).
+func (m *model) cyclePreset() {
+	names := config.PresetNames()
+	m.presetIdx = (m.presetIdx + 1) % len(names)
+	p := config.Preset(names[m.presetIdx])
+	if p == nil {
+		return
+	}
+	m.cfg.Lines = p.Lines
+	m.cursor = 0
+	m.clampCursor()
+	m.status = "preset: " + names[m.presetIdx]
+}
+
 func (m model) View() string {
 	var b strings.Builder
 
@@ -221,9 +415,61 @@ func (m model) View() string {
 	b.WriteString("\n\n")
 
 	b.WriteString(m.renderList())
+	switch {
+	case m.editing:
+		b.WriteString("\n")
+		b.WriteString(m.renderOptions())
+	case m.adding:
+		b.WriteString("\n")
+		b.WriteString(m.renderAdd())
+	}
 	b.WriteString("\n")
 	b.WriteString(dim.Render(m.status))
 	b.WriteString("\n")
+	return b.String()
+}
+
+// renderOptions draws the per-segment option editor for the current segment.
+func (m model) renderOptions() string {
+	specs := optionsFor(m.currentType())
+	header := lipgloss.NewStyle().Foreground(lipgloss.Color("#f9e2af")).Bold(true)
+	cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#89b4fa")).Bold(true)
+	val := lipgloss.NewStyle().Foreground(lipgloss.Color("#a6e3a1"))
+
+	sc := m.currentSegment()
+	var b strings.Builder
+	b.WriteString(header.Render("options · " + m.currentType()))
+	b.WriteString("\n")
+	for i, spec := range specs {
+		pointer := "  "
+		if i == m.optCursor {
+			pointer = cursorStyle.Render("▸ ")
+		}
+		cur := ""
+		if sc != nil {
+			cur = optDisplay(sc.Options, spec)
+		}
+		fmt.Fprintf(&b, "  %s%-10s %s\n", pointer, spec.label, val.Render("‹ "+cur+" ›"))
+	}
+	return b.String()
+}
+
+// renderAdd draws the add-segment type picker.
+func (m model) renderAdd() string {
+	types := m.addableTypes()
+	header := lipgloss.NewStyle().Foreground(lipgloss.Color("#f9e2af")).Bold(true)
+	cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#89b4fa")).Bold(true)
+
+	var b strings.Builder
+	b.WriteString(header.Render("add segment"))
+	b.WriteString("\n")
+	for i, t := range types {
+		pointer := "  "
+		if i == m.addCursor {
+			pointer = cursorStyle.Render("▸ ")
+		}
+		fmt.Fprintf(&b, "  %s%s\n", pointer, t)
+	}
 	return b.String()
 }
 

@@ -7,6 +7,8 @@
 package segments
 
 import (
+	"sort"
+
 	"github.com/thissayantan/vitals/internal/cache"
 	"github.com/thissayantan/vitals/internal/claude"
 	"github.com/thissayantan/vitals/internal/cost"
@@ -65,6 +67,17 @@ func Register(s Segment) {
 func Get(typ string) (Segment, bool) {
 	s, ok := registry[typ]
 	return s, ok
+}
+
+// All returns every registered segment type, sorted. Used by the configurator's
+// add-segment picker.
+func All() []string {
+	out := make([]string, 0, len(registry))
+	for t := range registry {
+		out = append(out, t)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // ─── option helpers (shared by segment modules) ──────────────────────────
