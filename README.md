@@ -31,22 +31,27 @@ limits, cost, git, and more — rendered as composable segments you fully contro
 ## Quick start
 
 ```sh
-# Install (no runtime required) — Unicode icons, works in any terminal:
 curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh
-
-# Then wire it into Claude Code (safely merges ~/.claude/settings.json, backup first):
-vitals init
+vitals init   # wire it into Claude Code (merges ~/.claude/settings.json, backup first)
 ```
 
-**Using a Nerd Font?** Add `--nerdfont` to get the richer icon set (folder, calendar,
-language logos like the Go gopher). It seeds `charset: nerdfont` for you:
+The full icon set needs a **Nerd Font**. If you don't have one, the installer **offers to
+install one for you** (default Yes) — or force it non-interactively:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh -s -- --nerdfont
 ```
 
-That's it — restart Claude Code and your new status line is live. Then run `vitals config`
-to customize it visually.
+Font flags: `--nerdfont` (install + enable), `--install-font` / `--no-install-font`,
+`--font <name>` (default `CascadiaCode`). If you already have a Nerd Font, the installer
+detects it and skips the download.
+
+> **One manual step the installer can't do:** after a font is installed, **select it in your
+> terminal's settings** (e.g. "CaskaydiaCove Nerd Font") — no installer can change your
+> terminal's font. Without a Nerd Font, vitals falls back to clean **Unicode** icons that work
+> anywhere, so it's never broken. Toggle anytime with `vitals config` → `c`.
+
+Then restart Claude Code — your status line is live. Run `vitals config` to customize it visually.
 
 <details>
 <summary>Manual setup (no installer)</summary>

@@ -7,6 +7,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- Installer can set up a Nerd Font: when none is detected it offers to install one
+  (default Yes, interactive), or via `--nerdfont` / `--install-font` / `--font <name>`.
+  Skips when a Nerd Font is already present; prints the required "select it in your
+  terminal" step (which no installer can automate).
+
 ## [0.2.0] - 2026-07-07
 
 ### Added

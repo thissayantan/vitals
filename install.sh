@@ -9,8 +9,16 @@
 #   --bin-dir <dir>      install location (default: $HOME/.local/bin)
 #   --charset <name>     seed a config with this charset if none exists
 #                        (auto|unicode|nerdfont|ascii); enables icons on install
-#   --nerdfont           shorthand for --charset nerdfont (language/status icons)
+#   --nerdfont           enable the Nerd Font icon set: seed charset nerdfont AND
+#                        install a Nerd Font if none is present
+#   --install-font       install a Nerd Font (no prompt); --no-install-font to skip
+#   --font <name>        which Nerd Font to install (default: CascadiaCode)
 #   --no-modify-path     don't print PATH instructions
+#
+# vitals renders fine in Unicode with no font, but the full icon set needs a Nerd
+# Font. When none is detected and the installer is interactive, it offers to
+# install one (default Yes). A font FILE is all we can install — you must still
+# select it in your terminal's settings; the installer prints how.
 #
 # Hardened after zoxide/atuin: HTTPS-only, checksum-verified, no sudo, whole body
 # wrapped in a function called at the very end (guards truncated-download exec).
@@ -23,6 +31,9 @@ VERSION="latest"
 BIN_DIR="${HOME}/.local/bin"
 MODIFY_PATH=1
 CHARSET=""                      # empty ⇒ leave config alone (charset auto ⇒ unicode)
+INSTALL_FONT=""                 # ""=ask (interactive), yes=install, no=skip
+FONT="CascadiaCode"             # Nerd Font to install (installs as "CaskaydiaCove Nerd Font")
+FONT_INSTALLED=0
 
 main() {
 	parse_args "$@"
@@ -54,6 +65,7 @@ main() {
 		|| err "install to ${BIN_DIR} failed"
 
 	say "Installed ${BIN} ${VERSION} → ${BIN_DIR}/${BIN}"
+	maybe_install_font
 	seed_config
 	post_install
 }
@@ -64,7 +76,10 @@ parse_args() {
 			--version) VERSION="$2"; shift 2 ;;
 			--bin-dir) BIN_DIR="$2"; shift 2 ;;
 			--charset) CHARSET="$2"; shift 2 ;;
-			--nerdfont) CHARSET="nerdfont"; shift ;;
+			--nerdfont) CHARSET="nerdfont"; [ -z "$INSTALL_FONT" ] && INSTALL_FONT="yes"; shift ;;
+			--install-font) INSTALL_FONT="yes"; shift ;;
+			--no-install-font) INSTALL_FONT="no"; shift ;;
+			--font) FONT="$2"; shift 2 ;;
 			--no-modify-path) MODIFY_PATH=0; shift ;;
 			*) err "unknown flag: $1" ;;
 		esac
@@ -109,6 +124,68 @@ verify_checksum() { # dir asset
 	say "Checksum verified."
 }
 
+# have_nerdfont reports whether any Nerd Font is already installed (best-effort;
+# needs fontconfig's fc-list, which some macOS setups lack).
+have_nerdfont() {
+	command -v fc-list >/dev/null 2>&1 || return 1
+	# Match both spellings: "… Nerd Font" and the "NF" abbreviation (e.g. Cascadia
+	# Mono NF, JetBrainsMono Nerd Font).
+	fc-list 2>/dev/null | grep -qiE 'nerd ?font| nf[ :,]'
+}
+
+# install_font downloads a Nerd Font from the ryanoasis/nerd-fonts release and
+# unpacks it into the user font dir (no sudo). Sets FONT_INSTALLED=1 on success.
+install_font() {
+	need unzip || { say "unzip not found — skipping font install (grab one from https://www.nerdfonts.com)"; return 1; }
+	case "$(uname -s)" in
+		Darwin) fdir="${HOME}/Library/Fonts" ;;
+		*)      fdir="${HOME}/.local/share/fonts" ;;
+	esac
+	url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${FONT}.zip"
+	ftmp="$(mktemp -d)"
+	say "Downloading ${FONT} Nerd Font…"
+	if ! fetch "$url" "${ftmp}/font.zip"; then
+		say "font download failed — skipping (install a Nerd Font manually)"; rm -rf "$ftmp"; return 1
+	fi
+	mkdir -p "$fdir"
+	unzip -o -q "${ftmp}/font.zip" '*.ttf' '*.otf' -d "$fdir" >/dev/null 2>&1 \
+		|| unzip -o -q "${ftmp}/font.zip" -d "$fdir" >/dev/null 2>&1 \
+		|| { say "font unpack failed — skipping"; rm -rf "$ftmp"; return 1; }
+	rm -rf "$ftmp"
+	command -v fc-cache >/dev/null 2>&1 && fc-cache -f "$fdir" >/dev/null 2>&1
+	FONT_INSTALLED=1
+	say "Installed ${FONT} Nerd Font → ${fdir}"
+}
+
+# maybe_install_font installs a Nerd Font per --install-font/--no-install-font, or
+# asks once (default Yes) when interactive and none is present. Skips silently if
+# a Nerd Font already exists. On install, enables the nerdfont charset.
+maybe_install_font() {
+	if have_nerdfont; then
+		[ "$INSTALL_FONT" = "yes" ] && say "A Nerd Font is already installed — skipping font download."
+		return 0
+	fi
+	case "$INSTALL_FONT" in
+		no) return 0 ;;
+		yes) install_font ;;
+		*)
+			if [ -r /dev/tty ]; then
+				printf '  No Nerd Font found. vitals looks best with one. Install %s Nerd Font now? [Y/n] ' "$FONT"
+				read ans < /dev/tty || ans=""
+				case "$ans" in
+					[Nn]*) say "Skipped — vitals will use the Unicode fallback (still works)."; return 0 ;;
+					*) install_font ;;
+				esac
+			else
+				say "No Nerd Font detected — using the Unicode fallback. Re-run with --nerdfont to install one."
+				return 0
+			fi ;;
+	esac
+	# If we installed a font and no charset was chosen, enable the nerdfont set.
+	[ "$FONT_INSTALLED" = 1 ] && [ -z "$CHARSET" ] && CHARSET="nerdfont"
+	return 0
+}
+
 # seed_config writes a minimal config with the requested charset, but only when
 # --charset/--nerdfont was passed AND no config exists yet — never clobbering an
 # existing one. Icons (language glyphs, block/clock/branch) need charset nerdfont
@@ -141,6 +218,15 @@ post_install() {
 		*":${BIN_DIR}:"*) ;;
 		*) [ "$MODIFY_PATH" -eq 1 ] && say "Add to PATH:  export PATH=\"${BIN_DIR}:\$PATH\"" ;;
 	esac
+	if [ "$FONT_INSTALLED" = 1 ]; then
+		cat <<EOF
+
+⚠ ONE manual step the installer can't do for you:
+  Set your terminal's font to "CaskaydiaCove Nerd Font" (Settings → Profile → Font),
+  then restart the terminal. Until you do, icons may show as boxes.
+  Prefer plain text? Run \`${BIN} config\` and press c to switch charset (nerdfont ↔ unicode).
+EOF
+	fi
 	cat <<EOF
 
 Next steps:
