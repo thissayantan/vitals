@@ -71,9 +71,12 @@ Two lines by default (each fully reorderable):
 hirex │ ⎇ feat/hiring-pipeline* │ bun v1.3.14 │ ± +2453/-439 │ ⚑ ▣▣▢░░░░░░░ 30%
 ```
 
-(Shown in the Unicode charset. With `charset: nerdfont` each segment gets a richer glyph — a
-sparkle for the model, a folder for the directory, a calendar for the weekly limit, language
-logos on `runtime`, etc.)
+> This is the **Unicode** charset — deliberately, because a GitHub README (a browser with no
+> Nerd Font) can't render Nerd Font glyphs. With a **Nerd Font** installed (`charset: nerdfont`,
+> which the installer offers to set up), every segment gets a richer icon: a **✧ sparkle** for
+> the model, a **brain** for context, a **calendar** for the weekly limit, a **folder** for the
+> directory, the **language's logo** on `runtime` (the Go gopher, etc.), and an **≈** on estimated
+> cost. Same layout, nicer glyphs.
 
 Each segment **smart-hides** when its data is zero, empty, or unavailable (no branch outside a
 repo, no cost on a fresh session, etc.), so the line stays tidy.
