@@ -82,6 +82,21 @@ func Defaults() *Config {
 	}
 }
 
+// LoadFrom loads config from an explicit path, deep-merged onto Defaults(). An
+// empty path falls back to discovery (Load), so callers can pass a --config
+// override through without a global side-channel. A read error yields Defaults()
+// plus the error (the caller may ignore it and use Defaults()).
+func LoadFrom(path string) (*Config, error) {
+	if path == "" {
+		return Load()
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return Defaults(), fmt.Errorf("read %s: %w", path, err)
+	}
+	return Merge(Defaults(), data)
+}
+
 // Load discovers, parses, and deep-merges the first config file found onto
 // Defaults(). A missing/empty config yields Defaults(). Parse errors are
 // returned (the caller may fall back to Defaults()).
@@ -110,15 +125,17 @@ func Discover() string {
 	if p := ".vitals.json"; fileExists(p) {
 		return p
 	}
-	if p := userConfigPath(); fileExists(p) {
+	if p := UserConfigPath(); fileExists(p) {
 		return p
 	}
 	return ""
 }
 
-// userConfigPath is $XDG_CONFIG_HOME/vitals/config.json (default
-// ~/.config/vitals/config.json).
-func userConfigPath() string {
+// UserConfigPath is $XDG_CONFIG_HOME/vitals/config.json (default
+// ~/.config/vitals/config.json), or "" if the home dir can't be resolved. It is
+// both the user-level discovery location and the TUI's save target, so the two
+// can never drift.
+func UserConfigPath() string {
 	base := os.Getenv("XDG_CONFIG_HOME")
 	if base == "" {
 		home, err := os.UserHomeDir()

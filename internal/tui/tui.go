@@ -8,8 +8,6 @@ package tui
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -198,7 +196,7 @@ func (m *model) moveUp(pos cursorPos) cursorPos {
 }
 
 func (m *model) save() {
-	path := userConfigPath()
+	path := config.UserConfigPath()
 	if err := m.cfg.Save(path); err != nil {
 		m.status = "save failed: " + err.Error()
 		return
@@ -290,18 +288,6 @@ func previewColorMode(mode string) string {
 	default:
 		return mode
 	}
-}
-
-func userConfigPath() string {
-	base := os.Getenv("XDG_CONFIG_HOME")
-	if base == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "vitals-config.json"
-		}
-		base = filepath.Join(home, ".config")
-	}
-	return filepath.Join(base, "vitals", "config.json")
 }
 
 // cycle returns the next/previous element after cur in choices (wrapping). If

@@ -33,10 +33,7 @@ func runRender(r io.Reader, w io.Writer) int {
 // renderSession loads config + theme and renders the session. configPath
 // overrides discovery when non-empty.
 func renderSession(sess *claude.Session, configPath string) (string, error) {
-	if configPath != "" {
-		_ = os.Setenv("VITALS_CONFIG", configPath)
-	}
-	cfg, err := config.Load()
+	cfg, err := config.LoadFrom(configPath)
 	if err != nil {
 		cfg = config.Defaults()
 	}
