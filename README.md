@@ -31,7 +31,8 @@ limits, cost, git, and more — rendered as composable segments you fully contro
 ## Quick start
 
 ```sh
-# Install (no runtime required)
+# Install (no runtime required). Add --nerdfont if your terminal uses a Nerd Font
+# to enable language/status icons (e.g. the Go gopher on the runtime segment).
 curl -fsSL https://raw.githubusercontent.com/sayantan/vitals/main/install.sh | sh
 
 # Wire it into Claude Code (safely merges ~/.claude/settings.json, backup first)
@@ -112,7 +113,8 @@ Or just run `vitals config` and do it visually.
 Built-in themes: `catppuccin-mocha` (default), `nord`, `tokyo-night`, `gruvbox`, `rose-pine`, and
 `none` (plain). `charset` is `auto` | `unicode` | `nerdfont` | `ascii`, and `colorMode` is `auto` |
 `truecolor` | `ansi256` | `ansi` | `none`. Colors auto-downgrade to whatever the terminal supports,
-and `NO_COLOR` is always honored.
+and `NO_COLOR` is always honored. The `nerdfont` charset also prefixes the runtime segment with a
+per-language icon (Go, Node, Python, Rust, …); `unicode`/`ascii` show the language name alone.
 
 ### Environment overrides
 
