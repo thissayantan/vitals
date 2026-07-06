@@ -14,7 +14,7 @@ func (s *gitSegment) Type() string { return "git" }
 func (s *gitSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool) {
 	showSha := optBool(cfg.Options, "showSha", false)
 
-	var info = ctx.Git()
+	info := ctx.Git()
 	if showSha {
 		info = ctx.GitSHA()
 	}
