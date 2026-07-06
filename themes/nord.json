@@ -1,0 +1,22 @@
+{
+  "name": "nord",
+  "description": "Nord palette — cool, muted arctic blues. Roles are semantic; segments reference roles, never raw colors.",
+  "roles": {
+    "brand":    { "fg": "#88c0d0", "bold": true },
+    "accent":   { "fg": "#8fbcbb" },
+    "muted":    { "fg": "#4c566a" },
+    "git":      { "fg": "#b48ead" },
+    "dir":      { "fg": "#81a1c1" },
+    "ok":       { "fg": "#a3be8c" },
+    "warn":     { "fg": "#ebcb8b" },
+    "crit":     { "fg": "#bf616a" },
+    "add":      { "fg": "#a3be8c" },
+    "del":      { "fg": "#bf616a" },
+    "cost":     { "fg": "#ebcb8b" },
+    "estimate": { "fg": "#8fbcbb" }
+  },
+  "gradient": [
+    "#a3be8c", "#b3c18a", "#c8cd8c", "#ebcb8b", "#e6bd84",
+    "#e0a880", "#d99078", "#bf616a", "#b3565f", "#a64b54"
+  ]
+}

@@ -1,0 +1,38 @@
+name: Demo
+
+# Regenerate docs/demo.gif from demo/demo.tape. Runs manually or when the tape
+# changes on main — kept out of the PR CI path so a flaky recording never blocks
+# a merge.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - demo/demo.tape
+      - .github/workflows/demo.yml
+
+permissions:
+  contents: write
+
+jobs:
+  vhs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+      - name: Build vitals onto PATH
+        run: |
+          go build -o "$HOME/.local/bin/vitals" ./cmd/vitals
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Render demo gif
+        uses: charmbracelet/vhs-action@v2
+        with:
+          path: demo/demo.tape
+      - name: Commit updated gif
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: regenerate demo gif"
+          file_pattern: docs/demo.gif

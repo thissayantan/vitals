@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sayantan/vitals/main/schema/vitals.schema.json",
+  "title": "vitals configuration",
+  "description": "Configuration for the vitals Claude Code status line. DRAFT — extend as segments/options are implemented.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "theme": {
+      "description": "Built-in theme name, or 'custom' to use themeOverrides.",
+      "type": "string",
+      "default": "catppuccin-mocha",
+      "examples": ["catppuccin-mocha", "nord", "tokyo-night", "gruvbox", "rose-pine", "none", "custom"]
+    },
+    "charset": {
+      "description": "Glyph set for icons/bars.",
+      "type": "string",
+      "enum": ["auto", "unicode", "nerdfont", "ascii"],
+      "default": "auto"
+    },
+    "colorMode": {
+      "type": "string",
+      "enum": ["auto", "truecolor", "ansi256", "ansi", "none"],
+      "default": "auto"
+    },
+    "separator": {
+      "description": "String placed between segments on a line.",
+      "type": "string",
+      "default": " │ "
+    },
+    "lines": {
+      "description": "Ordered list of status lines; each holds an ordered list of segments.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/line" },
+      "minItems": 1
+    },
+    "themeOverrides": {
+      "description": "Per-segment color overrides (used when theme == 'custom').",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/style" }
+    }
+  },
+  "$defs": {
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "segments": { "type": "array", "items": { "$ref": "#/$defs/segment" } },
+        "align": { "type": "string", "enum": ["left", "right"], "default": "left" }
+      },
+      "required": ["segments"]
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "model", "context", "block", "weekly", "cost", "duration",
+            "tasks", "git", "diff", "runtime", "worktree", "directory"
+          ]
+        },
+        "enabled": { "type": "boolean", "default": true },
+        "style": { "$ref": "#/$defs/style" },
+        "options": {
+          "description": "Segment-specific options. Documented per segment in DESIGN.md §4. Examples below.",
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "context" } } },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "display": { "type": "string", "enum": ["bar", "percent", "both"], "default": "both" },
+                  "barWidth": { "type": "integer", "minimum": 1, "default": 10 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "git" } } },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "showSha": { "type": "boolean", "default": false } }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "cost" } } },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "source": { "type": "string", "enum": ["auto", "cc", "estimate"], "default": "auto" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "directory" } } },
+          "then": {
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "style": { "type": "string", "enum": ["basename", "full", "truncated"], "default": "basename" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fg": { "type": "string", "description": "Foreground color (hex like #7266EA or ansi name)." },
+        "bg": { "type": "string", "description": "Background color." },
+        "bold": { "type": "boolean" },
+        "dim": { "type": "boolean" }
+      }
+    }
+  }
+}

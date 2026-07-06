@@ -1,0 +1,22 @@
+{
+  "name": "rose-pine",
+  "description": "Rosé Pine palette — soho-vibe muted rose and pine. Roles are semantic; segments reference roles, never raw colors.",
+  "roles": {
+    "brand":    { "fg": "#c4a7e7", "bold": true },
+    "accent":   { "fg": "#9ccfd8" },
+    "muted":    { "fg": "#6e6a86" },
+    "git":      { "fg": "#c4a7e7" },
+    "dir":      { "fg": "#31748f" },
+    "ok":       { "fg": "#9ccfd8" },
+    "warn":     { "fg": "#f6c177" },
+    "crit":     { "fg": "#eb6f92" },
+    "add":      { "fg": "#9ccfd8" },
+    "del":      { "fg": "#eb6f92" },
+    "cost":     { "fg": "#f6c177" },
+    "estimate": { "fg": "#ebbcba" }
+  },
+  "gradient": [
+    "#9ccfd8", "#a9ccc4", "#cbc99e", "#f6c177", "#f0a978",
+    "#ea917e", "#ec8085", "#eb6f92", "#dd6589", "#cc5a7e"
+  ]
+}

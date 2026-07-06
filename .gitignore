@@ -1,0 +1,24 @@
+# Binaries
+/vitals
+/dist/
+*.exe
+*.test
+*.out
+
+# Go
+/vendor/
+go.work
+go.work.sum
+
+# GoReleaser
+/dist
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local config / scratch
+*.local.json
+/tmp/

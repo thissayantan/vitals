@@ -1,0 +1,23 @@
+{
+  "name": "catppuccin-mocha",
+  "description": "Default theme. Matches the Catppuccin Mocha palette. Roles are semantic; segments reference roles, never raw colors.",
+  "roles": {
+    "brand":  { "fg": "#cba6f7", "bold": true },
+    "accent": { "fg": "#89dceb" },
+    "muted":  { "fg": "#6c7086" },
+    "git":    { "fg": "#cba6f7" },
+    "dir":    { "fg": "#89b4fa" },
+    "ok":     { "fg": "#a6e3a1" },
+    "warn":   { "fg": "#f9e2af" },
+    "crit":   { "fg": "#f38ba8" },
+    "add":    { "fg": "#a6e3a1" },
+    "del":    { "fg": "#f38ba8" },
+    "cost":   { "fg": "#f9e2af" },
+    "estimate": { "fg": "#94e2d5" }
+  },
+  "gradient": [
+    "#a6e3a1", "#b5e090", "#cddc7f", "#f9e2af", "#f8c87a",
+    "#f5a96a", "#f0935a", "#f38ba8", "#e57a98", "#d65f7a"
+  ],
+  "_note": "DRAFT. Add nord, tokyo-night, gruvbox, rose-pine, none. Embed all via go:embed in internal/theme. The 10-stop gradient drives the context/tasks bars (green→red)."
+}

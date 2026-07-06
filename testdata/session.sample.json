@@ -1,0 +1,19 @@
+{
+  "model": { "display_name": "Opus 4.8", "id": "claude-opus-4-8" },
+  "context_window": { "used_percentage": 38, "context_window_size": 1000000 },
+  "cost": {
+    "total_cost_usd": 34.13,
+    "total_duration_ms": 2881000,
+    "total_lines_added": 2453,
+    "total_lines_removed": 439
+  },
+  "workspace": { "current_dir": "/home/sayantan/everything/code/personal/hirex", "project_dir": "/home/sayantan/everything/code/personal/hirex" },
+  "rate_limits": {
+    "five_hour": { "used_percentage": 65, "resets_at": 1718784600 },
+    "seven_day": { "used_percentage": 12, "resets_at": 1719300000 }
+  },
+  "worktree": { "branch": "feat/hiring-pipeline", "name": "" },
+  "transcript_path": "/home/sayantan/.claude/projects/-home-sayantan-everything-code-personal-hirex/f6fd0d1c-996f-444b-85ba-98440e7c66cc.jsonl",
+  "session_id": "f6fd0d1c-996f-444b-85ba-98440e7c66cc",
+  "cwd": "/home/sayantan/everything/code/personal/hirex"
+}

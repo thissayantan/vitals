@@ -1,0 +1,19 @@
+{
+  "name": "none",
+  "description": "No color. All roles render as plain text (the theme is loaded with color mode forced off). Useful for NO_COLOR environments, logs, and stable golden output.",
+  "roles": {
+    "brand":    {},
+    "accent":   {},
+    "muted":    {},
+    "git":      {},
+    "dir":      {},
+    "ok":       {},
+    "warn":     {},
+    "crit":     {},
+    "add":      {},
+    "del":      {},
+    "cost":     {},
+    "estimate": {}
+  },
+  "gradient": []
+}

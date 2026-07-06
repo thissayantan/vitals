@@ -1,0 +1,63 @@
+# GoReleaser config for vitals. Docs: https://goreleaser.com
+# Validate locally:  goreleaser release --snapshot --clean
+# Release:           git tag vX.Y.Z && git push --tags   (CI runs goreleaser)
+version: 2
+
+project_name: vitals
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: vitals
+    main: ./cmd/vitals
+    binary: vitals
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - id: default
+    # Asset name must match install.sh: vitals_<version>_<os>_<arch>.tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+      - LICENSE
+      - schema/vitals.schema.json
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+# Uncomment once a Homebrew tap repo exists and HOMEBREW_TAP_GITHUB_TOKEN is set.
+# brews:
+#   - repository:
+#       owner: sayantan
+#       name: homebrew-tap
+#     homepage: "https://github.com/sayantan/vitals"
+#     description: "A modular status line for Claude Code"
+#     license: "MIT"
+
+release:
+  github:
+    owner: sayantan
+    name: vitals
+  draft: false
+  prerelease: auto

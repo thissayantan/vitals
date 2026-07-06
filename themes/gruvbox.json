@@ -1,0 +1,22 @@
+{
+  "name": "gruvbox",
+  "description": "Gruvbox dark palette — warm retro earth tones. Roles are semantic; segments reference roles, never raw colors.",
+  "roles": {
+    "brand":    { "fg": "#d3869b", "bold": true },
+    "accent":   { "fg": "#83a598" },
+    "muted":    { "fg": "#928374" },
+    "git":      { "fg": "#d3869b" },
+    "dir":      { "fg": "#83a598" },
+    "ok":       { "fg": "#b8bb26" },
+    "warn":     { "fg": "#fabd2f" },
+    "crit":     { "fg": "#fb4934" },
+    "add":      { "fg": "#b8bb26" },
+    "del":      { "fg": "#fb4934" },
+    "cost":     { "fg": "#fabd2f" },
+    "estimate": { "fg": "#8ec07c" }
+  },
+  "gradient": [
+    "#b8bb26", "#c4b724", "#d9b62a", "#fabd2f", "#fba32c",
+    "#fb8b29", "#fb6e2f", "#fb4934", "#ea4030", "#d8382c"
+  ]
+}

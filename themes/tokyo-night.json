@@ -1,0 +1,22 @@
+{
+  "name": "tokyo-night",
+  "description": "Tokyo Night palette — deep indigo night with neon accents. Roles are semantic; segments reference roles, never raw colors.",
+  "roles": {
+    "brand":    { "fg": "#bb9af7", "bold": true },
+    "accent":   { "fg": "#7dcfff" },
+    "muted":    { "fg": "#565f89" },
+    "git":      { "fg": "#bb9af7" },
+    "dir":      { "fg": "#7aa2f7" },
+    "ok":       { "fg": "#9ece6a" },
+    "warn":     { "fg": "#e0af68" },
+    "crit":     { "fg": "#f7768e" },
+    "add":      { "fg": "#9ece6a" },
+    "del":      { "fg": "#f7768e" },
+    "cost":     { "fg": "#e0af68" },
+    "estimate": { "fg": "#73daca" }
+  },
+  "gradient": [
+    "#9ece6a", "#aecb65", "#c6c364", "#e0af68", "#e29d63",
+    "#e4895e", "#ee7a6f", "#f7768e", "#e76a82", "#d65d76"
+  ]
+}
