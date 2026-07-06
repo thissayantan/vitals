@@ -7,6 +7,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-07
+
 ### Added
 - Renderer with all 12 segments (model, context, block, weekly, cost, duration, tasks, git, diff,
   runtime, worktree, directory), each honoring its smart-hide rule.
