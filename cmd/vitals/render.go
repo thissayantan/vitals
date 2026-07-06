@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/sayantan/vitals/internal/claude"
-	"github.com/sayantan/vitals/internal/config"
-	"github.com/sayantan/vitals/internal/render"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/render"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 // runRender is the hot path: parse session JSON from r, render, print to w.

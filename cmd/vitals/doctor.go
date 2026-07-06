@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/sayantan/vitals/internal/config"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 // runDoctor diagnoses the environment: color support, charset, optional tools,

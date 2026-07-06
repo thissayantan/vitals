@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sayantan/vitals/internal/cache"
+	"github.com/thissayantan/vitals/internal/cache"
 )
 
 func init() { Register(&tasksSegment{}) }

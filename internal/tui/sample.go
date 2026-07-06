@@ -3,7 +3,7 @@ package tui
 import (
 	"os"
 
-	"github.com/sayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/claude"
 )
 
 // previewSession returns a representative session for the live preview. The

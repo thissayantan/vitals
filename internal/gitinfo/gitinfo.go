@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sayantan/vitals/internal/cache"
+	"github.com/thissayantan/vitals/internal/cache"
 )
 
 // Info is the resolved git state for a directory.

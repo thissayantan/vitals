@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/sayantan/vitals/main/schema/vitals.schema.json",
+  "$id": "https://raw.githubusercontent.com/thissayantan/vitals/main/schema/vitals.schema.json",
   "title": "vitals configuration",
   "description": "Configuration for the vitals Claude Code status line. DRAFT — extend as segments/options are implemented.",
   "type": "object",

@@ -17,8 +17,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sayantan/vitals/internal/cache"
-	"github.com/sayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/cache"
+	"github.com/thissayantan/vitals/internal/claude"
 )
 
 //go:embed pricing.json

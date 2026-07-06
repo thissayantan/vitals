@@ -49,15 +49,15 @@ changelog:
 # Uncomment once a Homebrew tap repo exists and HOMEBREW_TAP_GITHUB_TOKEN is set.
 # brews:
 #   - repository:
-#       owner: sayantan
+#       owner: thissayantan
 #       name: homebrew-tap
-#     homepage: "https://github.com/sayantan/vitals"
+#     homepage: "https://github.com/thissayantan/vitals"
 #     description: "A modular status line for Claude Code"
 #     license: "MIT"
 
 release:
   github:
-    owner: sayantan
+    owner: thissayantan
     name: vitals
   draft: false
   prerelease: auto

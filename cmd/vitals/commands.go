@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sayantan/vitals/internal/tui"
+	"github.com/thissayantan/vitals/internal/tui"
 )
 
 // runConfig launches the TUI configurator (internal/tui) with a live preview.

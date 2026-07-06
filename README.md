@@ -10,8 +10,8 @@ limits, cost, git, and more — rendered as composable segments you fully contro
 <!-- Demo gif: generate with `vhs demo/demo.tape` (produces docs/demo.gif), then uncomment: -->
 <!-- ![vitals demo](docs/demo.gif) -->
 
-[![CI](https://github.com/sayantan/vitals/actions/workflows/ci.yml/badge.svg)](https://github.com/sayantan/vitals/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/sayantan/vitals)](https://github.com/sayantan/vitals/releases)
+[![CI](https://github.com/thissayantan/vitals/actions/workflows/ci.yml/badge.svg)](https://github.com/thissayantan/vitals/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/thissayantan/vitals)](https://github.com/thissayantan/vitals/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 </div>
@@ -33,7 +33,7 @@ limits, cost, git, and more — rendered as composable segments you fully contro
 ```sh
 # Install (no runtime required). Add --nerdfont if your terminal uses a Nerd Font
 # to enable language/status icons (e.g. the Go gopher on the runtime segment).
-curl -fsSL https://raw.githubusercontent.com/sayantan/vitals/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh
 
 # Wire it into Claude Code (safely merges ~/.claude/settings.json, backup first)
 vitals init
@@ -89,7 +89,7 @@ Config is JSON, validated by a [JSON Schema](schema/vitals.schema.json). Discove
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/sayantan/vitals/main/schema/vitals.schema.json",
+  "$schema": "https://raw.githubusercontent.com/thissayantan/vitals/main/schema/vitals.schema.json",
   "theme": "catppuccin-mocha",
   "charset": "auto",
   "separator": " │ ",

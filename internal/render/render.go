@@ -12,14 +12,14 @@ import (
 	"sync"
 	"unicode"
 
-	"github.com/sayantan/vitals/internal/cache"
-	"github.com/sayantan/vitals/internal/claude"
-	"github.com/sayantan/vitals/internal/config"
-	"github.com/sayantan/vitals/internal/cost"
-	"github.com/sayantan/vitals/internal/gitinfo"
-	"github.com/sayantan/vitals/internal/runtime"
-	"github.com/sayantan/vitals/internal/segments"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/cache"
+	"github.com/thissayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/cost"
+	"github.com/thissayantan/vitals/internal/gitinfo"
+	"github.com/thissayantan/vitals/internal/runtime"
+	"github.com/thissayantan/vitals/internal/segments"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 // Render composes the full status output (one string, lines separated by "\n").

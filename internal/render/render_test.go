@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sayantan/vitals/internal/claude"
-	"github.com/sayantan/vitals/internal/config"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 func TestMain(m *testing.M) {

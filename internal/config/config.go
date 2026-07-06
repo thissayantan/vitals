@@ -16,11 +16,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 // SchemaURL is the published JSON-Schema URL written into saved configs.
-const SchemaURL = "https://raw.githubusercontent.com/sayantan/vitals/main/schema/vitals.schema.json"
+const SchemaURL = "https://raw.githubusercontent.com/thissayantan/vitals/main/schema/vitals.schema.json"
 
 // Config is the full vitals configuration.
 type Config struct {

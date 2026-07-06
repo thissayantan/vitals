@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/sayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/claude"
 )
 
 func TestPriceFor(t *testing.T) {

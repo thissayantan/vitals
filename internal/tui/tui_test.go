@@ -6,7 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/sayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/config"
 )
 
 func key(s string) tea.KeyMsg {

@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sayantan/vitals/internal/cache"
+	"github.com/thissayantan/vitals/internal/cache"
 )
 
 // Info is the detected language + version (either may be empty).

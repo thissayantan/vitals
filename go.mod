@@ -1,4 +1,4 @@
-module github.com/sayantan/vitals
+module github.com/thissayantan/vitals
 
 go 1.24.0
 

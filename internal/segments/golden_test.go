@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sayantan/vitals/internal/claude"
-	"github.com/sayantan/vitals/internal/cost"
-	"github.com/sayantan/vitals/internal/gitinfo"
-	"github.com/sayantan/vitals/internal/runtime"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/cost"
+	"github.com/thissayantan/vitals/internal/gitinfo"
+	"github.com/thissayantan/vitals/internal/runtime"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 var update = flag.Bool("update", false, "update golden files")

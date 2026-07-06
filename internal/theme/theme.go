@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	vitals "github.com/sayantan/vitals"
+	vitals "github.com/thissayantan/vitals"
 )
 
 // Color is a hex string ("#7266EA") or empty for "no color".

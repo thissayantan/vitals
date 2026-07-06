@@ -6,7 +6,7 @@ import (
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
 
-	vitals "github.com/sayantan/vitals"
+	vitals "github.com/thissayantan/vitals"
 )
 
 // Validate checks raw config JSON against the embedded JSON Schema. It returns a

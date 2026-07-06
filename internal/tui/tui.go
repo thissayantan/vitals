@@ -13,10 +13,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/sayantan/vitals/internal/claude"
-	"github.com/sayantan/vitals/internal/config"
-	"github.com/sayantan/vitals/internal/render"
-	"github.com/sayantan/vitals/internal/theme"
+	"github.com/thissayantan/vitals/internal/claude"
+	"github.com/thissayantan/vitals/internal/config"
+	"github.com/thissayantan/vitals/internal/render"
+	"github.com/thissayantan/vitals/internal/theme"
 )
 
 // themeChoices are the built-in themes cycled in the configurator.

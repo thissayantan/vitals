@@ -2,7 +2,7 @@
 # vitals installer — downloads the right release binary, verifies its checksum,
 # and installs it to ~/.local/bin.
 #
-#   curl -fsSL https://raw.githubusercontent.com/sayantan/vitals/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/thissayantan/vitals/main/install.sh | sh
 #
 # Flags:
 #   --version <vX.Y.Z>   install a specific version (default: latest)
@@ -14,13 +14,10 @@
 #
 # Hardened after zoxide/atuin: HTTPS-only, checksum-verified, no sudo, whole body
 # wrapped in a function called at the very end (guards truncated-download exec).
-#
-# NOTE (implementation): finalize REPO once the GitHub repo exists, and confirm the
-# asset naming matches .goreleaser.yaml. Tested end-to-end against a snapshot build.
 
 set -u
 
-REPO="sayantan/vitals"          # TODO: set to the real owner/repo
+REPO="thissayantan/vitals"
 BIN="vitals"
 VERSION="latest"
 BIN_DIR="${HOME}/.local/bin"

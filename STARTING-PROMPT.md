@@ -58,9 +58,8 @@ going deep on the TUI and release pipeline.
 ---
 
 ## Notes for the implementer
-- **Module path** in `go.mod` is `github.com/sayantan/vitals` (placeholder owner). Update it and the
-  URLs in README / schema `$id` / install.sh `REPO` / `.goreleaser.yaml` once the real GitHub owner
-  is known.
+- **Module path** in `go.mod` is `github.com/thissayantan/vitals`; the README URLs, schema `$id`,
+  install.sh `REPO`, and `.goreleaser.yaml` owner all use the same `thissayantan` owner.
 - **Repo vs binary name:** binary is `vitals`; repo can be `vitals` (with the tagline + GitHub topics
   `claude-code` / `statusline` / `tui` for discoverability), since the name itself isn't keyword-SEO.
 - The captured `testdata/session.sample.json` mirrors the user's real status line (Opus 4.8, 1M ctx
