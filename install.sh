@@ -7,6 +7,9 @@
 # Flags:
 #   --version <vX.Y.Z>   install a specific version (default: latest)
 #   --bin-dir <dir>      install location (default: $HOME/.local/bin)
+#   --charset <name>     seed a config with this charset if none exists
+#                        (auto|unicode|nerdfont|ascii); enables icons on install
+#   --nerdfont           shorthand for --charset nerdfont (language/status icons)
 #   --no-modify-path     don't print PATH instructions
 #
 # Hardened after zoxide/atuin: HTTPS-only, checksum-verified, no sudo, whole body
@@ -22,6 +25,7 @@ BIN="vitals"
 VERSION="latest"
 BIN_DIR="${HOME}/.local/bin"
 MODIFY_PATH=1
+CHARSET=""                      # empty ⇒ leave config alone (charset auto ⇒ unicode)
 
 main() {
 	parse_args "$@"
@@ -53,6 +57,7 @@ main() {
 		|| err "install to ${BIN_DIR} failed"
 
 	say "Installed ${BIN} ${VERSION} → ${BIN_DIR}/${BIN}"
+	seed_config
 	post_install
 }
 
@@ -61,6 +66,8 @@ parse_args() {
 		case "$1" in
 			--version) VERSION="$2"; shift 2 ;;
 			--bin-dir) BIN_DIR="$2"; shift 2 ;;
+			--charset) CHARSET="$2"; shift 2 ;;
+			--nerdfont) CHARSET="nerdfont"; shift ;;
 			--no-modify-path) MODIFY_PATH=0; shift ;;
 			*) err "unknown flag: $1" ;;
 		esac
@@ -105,6 +112,33 @@ verify_checksum() { # dir asset
 	say "Checksum verified."
 }
 
+# seed_config writes a minimal config with the requested charset, but only when
+# --charset/--nerdfont was passed AND no config exists yet — never clobbering an
+# existing one. Icons (language glyphs, block/clock/branch) need charset nerdfont
+# and a Nerd Font installed, so this stays strictly opt-in.
+seed_config() {
+	[ -n "$CHARSET" ] || return 0
+	case "$CHARSET" in
+		auto|unicode|nerdfont|ascii) ;;
+		*) err "invalid --charset: ${CHARSET} (want auto|unicode|nerdfont|ascii)" ;;
+	esac
+	cfg_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/vitals"
+	cfg="${cfg_dir}/config.json"
+	if [ -e "$cfg" ]; then
+		say "Config exists (${cfg}); leaving it unchanged. Set \"charset\": \"${CHARSET}\" there to enable icons."
+		return 0
+	fi
+	mkdir -p "$cfg_dir" || { say "warning: could not create ${cfg_dir}; skipping config seed"; return 0; }
+	schema="https://raw.githubusercontent.com/${REPO}/main/schema/vitals.schema.json"
+	cat > "$cfg" <<EOF
+{
+  "\$schema": "${schema}",
+  "charset": "${CHARSET}"
+}
+EOF
+	say "Wrote ${cfg} (charset: ${CHARSET})."
+}
+
 post_install() {
 	case ":${PATH}:" in
 		*":${BIN_DIR}:"*) ;;
@@ -115,6 +149,9 @@ post_install() {
 Next steps:
   ${BIN} init      # wire vitals into ~/.claude/settings.json (backup first)
   ${BIN} config    # customize segments, theme, and order
+
+Using a Nerd Font? Re-run with --nerdfont (or set "charset": "nerdfont" in
+${XDG_CONFIG_HOME:-${HOME}/.config}/vitals/config.json) to show language and status icons.
 EOF
 }
 
