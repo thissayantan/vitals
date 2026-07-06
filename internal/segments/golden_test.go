@@ -136,6 +136,21 @@ func TestSegmentGoldens(t *testing.T) {
 	}
 }
 
+// TestRuntimeNerdFontGolden covers the language-icon path: in the Nerd Font
+// charset the runtime segment prefixes the language with its glyph (e.g. the Go
+// gopher), whereas the plain "runtime" golden (unicode charset) shows the name
+// alone.
+func TestRuntimeNerdFontGolden(t *testing.T) {
+	th, err := theme.Load("catppuccin-mocha", "nerdfont", "none", nil)
+	if err != nil {
+		t.Fatalf("theme load: %v", err)
+	}
+	ctx := testCtx(t, sampleSession())
+	ctx.Theme = th
+	ctx.Runtime = func() runtime.Info { return runtime.Info{Language: "go", Version: "v1.24.0"} }
+	goldenCase(t, "runtime_nerdfont", cfg("runtime", nil), ctx)
+}
+
 func TestHiddenSegments(t *testing.T) {
 	// A session with everything zero/absent ⇒ optional segments hide.
 	s := &claude.Session{

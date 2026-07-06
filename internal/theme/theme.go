@@ -66,7 +66,16 @@ type Glyphs struct {
 	BarEmpty   string // context bar ░
 	TaskFilled string // task bar ▣
 	TaskEmpty  string // task bar ▢
+
+	// Lang maps a runtime language (as detected by internal/runtime) to its
+	// icon. Only populated for the Nerd Font charset; nil for unicode/ascii,
+	// where the runtime segment falls back to the language name alone.
+	Lang map[string]string
 }
+
+// LangIcon returns the icon for a runtime language, or "" if this charset has
+// none (unicode/ascii, or an unmapped language such as bun/deno).
+func (g Glyphs) LangIcon(lang string) string { return g.Lang[lang] }
 
 // Theme is a fully-resolved palette + charset + color mode.
 type Theme struct {
@@ -108,14 +117,39 @@ func Load(name, charset, colorMode string, overrides map[string]Style) (*Theme, 
 		st.mode = mode
 		roles[role] = st
 	}
+	glyphs := glyphsFor(cs)
+	glyphs.Lang = langIconsFor(cs)
 	return &Theme{
 		Name:     name,
 		Roles:    roles,
 		Gradient: gradient,
 		Charset:  cs,
 		Mode:     mode,
-		Glyphs:   glyphsFor(cs),
+		Glyphs:   glyphs,
 	}, nil
+}
+
+// langIconsFor returns the per-language icon map for a charset. Only the Nerd
+// Font charset has language glyphs; unicode/ascii return nil so the runtime
+// segment falls back to the language name alone (no mojibake). Codepoints match
+// those used by bundled Oh My Posh themes, so they render in the same Nerd Fonts
+// users already have. bun/deno have no standard glyph and are omitted.
+func langIconsFor(cs Charset) map[string]string {
+	if cs != CharsetNerdFont {
+		return nil
+	}
+	return map[string]string{
+		"go":     "",
+		"node":   "",
+		"python": "",
+		"rust":   "",
+		"ruby":   "",
+		"java":   "",
+		"php":    "",
+		"dotnet": "",
+		"swift":  "",
+		"elixir": "",
+	}
 }
 
 // loadPalette reads a built-in theme's roles + gradient from the embedded FS.
