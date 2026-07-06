@@ -270,7 +270,7 @@ func (m model) renderList() string {
 			} else {
 				name = offStyle.Render(name)
 			}
-			b.WriteString(fmt.Sprintf("  %s%s %s\n", pointer, box, name))
+			fmt.Fprintf(&b, "  %s%s %s\n", pointer, box, name)
 			idx++
 		}
 	}

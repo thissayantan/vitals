@@ -99,10 +99,12 @@ func TestRGBToANSI256Grayscale(t *testing.T) {
 func clearNoColor(t *testing.T) {
 	t.Helper()
 	old, had := os.LookupEnv("NO_COLOR")
-	os.Unsetenv("NO_COLOR")
+	if err := os.Unsetenv("NO_COLOR"); err != nil {
+		t.Fatalf("unset NO_COLOR: %v", err)
+	}
 	t.Cleanup(func() {
 		if had {
-			os.Setenv("NO_COLOR", old)
+			_ = os.Setenv("NO_COLOR", old)
 		}
 	})
 }
