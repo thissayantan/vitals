@@ -23,11 +23,9 @@ func (s *costSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool) {
 
 	if est.Estimated {
 		amount := fmt.Sprintf("$%.2f", est.USD)
-		text := amount
+		text := "~" + amount // fallback marker for charsets without the glyph
 		if g := ctx.Theme.Glyphs.Estimate; g != "" {
-			text = g + " " + amount // glyph marks it as an estimate
-		} else {
-			text = "~" + amount
+			text = g + " " + amount
 		}
 		return styled(ctx, cfg, "estimate", text), true
 	}
