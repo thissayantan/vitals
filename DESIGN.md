@@ -187,10 +187,11 @@ directory). New default groups segments by meaning:
   ```
 - **Line 2 — workspace & work** *(Place → Version control → Environment → Active work)*
   ```
-  hirex │ ⎇ feat/hiring-pipeline* +2453/-439 │ bun v1.3.14 │ ▣▣▢░░ 30% ⚑
-   dir       git              diff            runtime         tasks
+  hirex │ ⎇ feat/hiring-pipeline* │ bun v1.3.14 │ ± +2453/-439 │ ⚑ ▣▣▢░░ 30%
+   dir       git              runtime          diff            tasks
   ```
-  `worktree` sits between `directory` and `git` when present (it hides when empty).
+  `worktree` sits between `directory` and `git` when present (it hides when empty). Each segment
+  leads with its icon (the `tasks` flag included); the Nerd Font charset swaps in richer glyphs.
 
 This is only the **shipped default** — the whole point is that it lives in config and users reorder
 freely. The default config (§5) encodes exactly this order.

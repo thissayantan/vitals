@@ -144,8 +144,9 @@ post_install() {
 	cat <<EOF
 
 Next steps:
-  ${BIN} init      # wire vitals into ~/.claude/settings.json (backup first)
-  ${BIN} config    # customize segments, theme, and order
+  ${BIN} init                    # wire vitals into ~/.claude/settings.json (backup first)
+  ${BIN} init --preset minimal   # ...and seed a starter config (full|minimal|compact)
+  ${BIN} config                  # customize segments, options, theme, and order
 
 Using a Nerd Font? Re-run with --nerdfont (or set "charset": "nerdfont" in
 ${XDG_CONFIG_HOME:-${HOME}/.config}/vitals/config.json) to show language and status icons.
