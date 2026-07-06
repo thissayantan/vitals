@@ -205,12 +205,10 @@ func (m *model) updateAdding(msg tea.KeyMsg) {
 }
 
 func (m *model) toggleCurrent() {
-	flat := m.flat()
-	if m.cursor >= len(flat) {
+	sc := m.currentSegment()
+	if sc == nil {
 		return
 	}
-	pos := flat[m.cursor]
-	sc := &m.cfg.Lines[pos.line].Segments[pos.seg]
 	v := !sc.IsEnabled()
 	sc.Enabled = &v
 }

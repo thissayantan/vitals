@@ -122,7 +122,8 @@ func newCtx(s *claude.Session, th *theme.Theme) *segments.RenderCtx {
 			return rtInfo
 		},
 		Cost: func(source string) cost.Estimate {
-			// Cost depends on the source option, so memoize per source.
+			// Parameterized by source, so unlike the providers above it isn't
+			// wrapped in a sync.Once; cost.Get caches its own transcript parse.
 			return cost.Get(s, store, source)
 		},
 	}
