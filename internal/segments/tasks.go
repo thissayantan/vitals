@@ -59,13 +59,9 @@ func (s *tasksSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool) 
 		role = "warn"
 	}
 	pctText := styled(ctx, cfg, role, fmt.Sprintf("%d%%", pct))
-	flag := ctx.Theme.Style("muted").Render(ctx.Theme.Glyphs.Flag)
 
 	// Flag leads the segment (icon-first, like every other segment).
-	out := bar + " " + pctText
-	if ctx.Theme.Glyphs.Flag != "" {
-		out = flag + " " + out
-	}
+	out := prependGlyph(ctx, ctx.Theme.Glyphs.Flag, " ", bar+" "+pctText)
 	return out, true
 }
 

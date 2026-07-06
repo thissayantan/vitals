@@ -117,3 +117,13 @@ func styled(ctx *RenderCtx, cfg SegmentConfig, role, text string) string {
 	}
 	return ctx.Theme.Style(role).Render(text)
 }
+
+// prependGlyph puts a leading muted glyph in front of out, joined by sep (glyphs
+// that carry their own trailing space pass sep == ""). Returns out unchanged when
+// glyph is empty, i.e. charsets that lack the glyph.
+func prependGlyph(ctx *RenderCtx, glyph, sep, out string) string {
+	if glyph == "" {
+		return out
+	}
+	return ctx.Theme.Style("muted").Render(glyph) + sep + out
+}

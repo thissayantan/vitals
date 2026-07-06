@@ -33,10 +33,7 @@ func (s *weeklySegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool)
 	}
 	label := ctx.Theme.Style("muted").Render("7d")
 	value := styled(ctx, cfg, role, fmt.Sprintf("%d%%", pct))
-	out := label + " " + value
 	// Lead with the weekly (calendar) glyph; it carries a trailing space.
-	if g := ctx.Theme.Glyphs.Week; g != "" {
-		out = ctx.Theme.Style("muted").Render(g) + out
-	}
+	out := prependGlyph(ctx, ctx.Theme.Glyphs.Week, "", label+" "+value)
 	return out, true
 }

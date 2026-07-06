@@ -55,9 +55,7 @@ func (s *contextSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool
 
 	out := strings.Join(parts, " ")
 	// Lead with the context (brain) glyph; it carries a trailing space.
-	if g := ctx.Theme.Glyphs.Ctx; g != "" {
-		out = ctx.Theme.Style("muted").Render(g) + out
-	}
+	out = prependGlyph(ctx, ctx.Theme.Glyphs.Ctx, "", out)
 	return out, true
 }
 

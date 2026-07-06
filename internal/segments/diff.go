@@ -19,9 +19,6 @@ func (s *diffSegment) Render(ctx *RenderCtx, _ SegmentConfig) (string, bool) {
 	addText := ctx.Theme.Style("add").Render(fmt.Sprintf("+%d", add))
 	sep := ctx.Theme.Style("muted").Render("/")
 	rmText := ctx.Theme.Style("del").Render(fmt.Sprintf("-%d", rm))
-	out := addText + sep + rmText
-	if g := ctx.Theme.Glyphs.Diff; g != "" {
-		out = ctx.Theme.Style("muted").Render(g) + " " + out
-	}
+	out := prependGlyph(ctx, ctx.Theme.Glyphs.Diff, " ", addText+sep+rmText)
 	return out, true
 }
