@@ -10,7 +10,7 @@ import (
 func init() { Register(&blockSegment{}) }
 
 // blockSegment renders the 5-hour rate-limit usage + reset time,
-// e.g. "↻ 5h 65% ↺8:10am".
+// e.g. "↻ 5h 65% ↺ 8:10am".
 //
 // Source: rate_limits.five_hour.{used_percentage,resets_at}.
 // Hides when used_percentage is absent or < 0 (the prototype's `// -1` rule).
@@ -39,7 +39,11 @@ func (s *blockSegment) Render(ctx *RenderCtx, cfg SegmentConfig) (string, bool) 
 		styled(ctx, cfg, pctRole(pct), fmt.Sprintf("%d%%", pct))
 
 	if reset := formatReset(lim.ResetsAt, cfg.Options); reset != "" {
-		out += " " + ctx.Theme.Style("muted").Render(g.ResetIcon+reset)
+		label := reset
+		if g.ResetIcon != "" {
+			label = g.ResetIcon + " " + reset // space between the reset icon and the time
+		}
+		out += " " + ctx.Theme.Style("muted").Render(label)
 	}
 	return out, true
 }

@@ -48,7 +48,7 @@ func TestEndToEnd(t *testing.T) {
 
 	got := Render(s, cfg, th)
 
-	want := "◆ Opus 4.8 │ 1M ███░░░░░░░ 38% ctx │ ↻ 5h 65% ↺8:10am │ 7d 12% │ ⏱ 48m1s │ $34.13\n" +
+	want := "◆ Opus 4.8 │ 1M ███░░░░░░░ 38% ctx │ ↻ 5h 65% ↺ 8:10am │ 7d 12% │ ⏱ 48m1s │ $34.13\n" +
 		filepath.Base(dir) + " │ ± +2453/-439"
 
 	if got != want {
