@@ -7,11 +7,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-07
+
 ### Added
 - Installer can set up a Nerd Font: when none is detected it offers to install one
   (default Yes, interactive), or via `--nerdfont` / `--install-font` / `--font <name>`.
   Skips when a Nerd Font is already present; prints the required "select it in your
   terminal" step (which no installer can automate).
+
+### Fixed
+- `block` segment: add a space between the reset icon and the reset time
+  (`↺8:10am` → `↺ 8:10am`).
 
 ## [0.2.0] - 2026-07-07
 
